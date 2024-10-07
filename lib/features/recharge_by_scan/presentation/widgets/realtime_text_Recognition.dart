@@ -45,7 +45,7 @@ class _RealTimeTextRecognitionWidgetState extends State<RealTimeTextRecognitionW
     super.initState();
   }
 
-
+//xxx
   @override
   Widget build(BuildContext context) {
     return Center(
