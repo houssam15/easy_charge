@@ -6,14 +6,16 @@ import 'package:recharge_by_scan/features/recharge_by_scan/presentation/bloc/rem
 import 'package:recharge_by_scan/features/recharge_by_scan/presentation/bloc/remote/recharge_account/remote_recharge_account_event.dart';
 import 'package:recharge_by_scan/injection_container.dart';
 
+import 'core/util/custom_navigation_helper.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget{
-  const MyApp({Key? key}) : super(key:key);
+class App extends StatelessWidget{
+  const App({Key? key}) : super(key:key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget{
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: theme(),
-        routerConfig: AppRoutes().router,
+        routerConfig: CustomNavigationHelper.router,
       ),
     );
   }

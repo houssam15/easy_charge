@@ -8,6 +8,7 @@ import "package:recharge_by_scan/features/recharge_by_scan/domain/usecases/recha
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/bloc/remote/recharge_account/remote_recharge_account_bloc.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/service/sms.dart";
 
+import "core/util/custom_navigation_helper.dart";
 import "features/recharge_by_scan/domain/usecases/get_user_accounts.dart";
 final sl = GetIt.instance;
 
@@ -25,4 +26,6 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<RemoteRechargeAccountBloc>(
       () => RemoteRechargeAccountBloc(sl(),sl(),sl())
   );
+  //Routes
+  CustomNavigationHelper.instance;
 }
