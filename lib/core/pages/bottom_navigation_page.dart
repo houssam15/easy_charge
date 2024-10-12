@@ -17,33 +17,38 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Persisted Appbar"),
-      ),
-      body: SafeArea(
-          child: widget.child
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: widget.child.currentIndex,
-          onTap: (index){
-            widget.child.goBranch(
-                index,
-                initialLocation: index == widget.child.currentIndex
-            );
-            setState(() {});
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'settings',
-            ),
-          ]
-      ),
+      body: _buildBody(),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  _buildBody(){
+    return SafeArea(
+        child: widget.child
+    );
+  }
+
+  _buildBottomNavigationBar(){
+    return BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: widget.child.currentIndex,
+        onTap: (index){
+          widget.child.goBranch(
+              index,
+              initialLocation: index == widget.child.currentIndex
+          );
+          setState(() {});
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'settings',
+          ),
+        ]
     );
   }
 }
