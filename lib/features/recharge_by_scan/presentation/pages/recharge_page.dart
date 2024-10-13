@@ -1,13 +1,13 @@
 import "package:flutter/material.dart";
 
-class RechargeScreen extends StatefulWidget {
-  const RechargeScreen({super.key});
+class RechargePage extends StatefulWidget {
+  const RechargePage({super.key});
 
   @override
-  State<RechargeScreen> createState() => _RechargeScreenState();
+  State<RechargePage> createState() => _RechargePageState();
 }
 
-class _RechargeScreenState extends State<RechargeScreen> {
+class _RechargePageState extends State<RechargePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

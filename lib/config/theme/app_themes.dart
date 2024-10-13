@@ -26,7 +26,7 @@ class GlobalThemData{
     error: Colors.redAccent,
     onError: Colors.white,
     background: Color(0xFFE6EBEB),
-    onBackground: Colors.white,
+    onBackground: Colors.black,
     surface: Color(0xFFFAFBFB),
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,

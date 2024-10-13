@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:recharge_by_scan/core/widgets/operator_item.dart";
 import "../../config/routes/routes.dart";
+import "../constants/app_images.dart";
 import "../util/custom_navigation_helper.dart";
 import "../widgets/service_item.dart";
 
@@ -77,13 +78,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const Expanded(
+              Expanded(
                 flex: 7,
                   child: Row(
                     children: [
-                        OperatorItem(image: "assets/imgs/tisalat.jpg"),
-                        OperatorItem(image: "assets/imgs/orange.jpg"),
-                        OperatorItem(image: "assets/imgs/inwi.jpg"),
+                        OperatorItem(image: AppImages.tisalatOperatorImage),
+                        OperatorItem(image: AppImages.orangeOperatorImage),
+                        OperatorItem(image: AppImages.inwiOperatorImage),
                     ],
                   ),
               ),
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             itemCount: 1,
             itemBuilder: (context, index) => ServiceItem(
                 index:index,
-                onTap: ()=>CustomNavigationHelper.router.push(AppRoutes.rechargePath),
+                onTap: ()=>CustomNavigationHelper.router.push(AppRoutes.rechargeGuidePath),
             ),
           ),
         )

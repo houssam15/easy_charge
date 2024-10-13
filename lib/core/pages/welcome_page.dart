@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recharge_by_scan/config/routes/routes.dart';
+import 'package:recharge_by_scan/core/constants/app_images.dart';
 import 'package:recharge_by_scan/core/widgets/theme_button.dart';
 
 import '../util/custom_navigation_helper.dart';
@@ -30,7 +31,7 @@ class _WelcomePageState extends State<WelcomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                    "assets/imgs/logo-light.png",
+                    AppImages.logoLightImage,
                     width: 180,
                 ),
                 const SizedBox(height: 30),
