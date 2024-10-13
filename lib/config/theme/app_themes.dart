@@ -21,8 +21,8 @@ class GlobalThemData{
   static const ColorScheme lightColorScheme = ColorScheme(
     primary: Color(0xFF14BF9E),
     onPrimary: Colors.black,
-    secondary: Color(0xFFEFF3F3),
-    onSecondary: Color(0xFF322942),
+    secondary: Colors.white,
+    onSecondary: Colors.grey,
     error: Colors.redAccent,
     onError: Colors.white,
     background: Color(0xFFE6EBEB),

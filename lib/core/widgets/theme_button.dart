@@ -30,18 +30,16 @@ class ThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(50),
-          child: Material(
-            color: this.color,
-            child: InkWell(
-              splashColor: this.highlight,
-              highlightColor: this.highlight,
-              onTap: () {
-                this.onClick();
-              },
+    return InkWell(
+      splashColor: this.highlight,
+      highlightColor: this.highlight,
+      onTap: ()=>onClick(),
+      child: Container(
+        margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Material(
+              color: this.color,
               child: Container(
                   width: width,
                   height: height,
@@ -72,8 +70,8 @@ class ThemeButton extends StatelessWidget {
                     ],
                   )
               ),
-            ),
-          )),
+            )),
+      ),
     );
   }
 }

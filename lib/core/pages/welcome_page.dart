@@ -74,11 +74,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   color: Theme.of(context).colorScheme.primary,
                   width: 300,
                   height: 80,
-                  onClick: (){
-                    CustomNavigationHelper.router.push(
-                      AppRoutes.homePath,
-                    );
-                  }
+                  onClick: ()=>CustomNavigationHelper.router.push(AppRoutes.homePath)
         ),
       ),
     );

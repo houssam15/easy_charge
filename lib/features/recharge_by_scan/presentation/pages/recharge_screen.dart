@@ -11,16 +11,11 @@ class _RechargeScreenState extends State<RechargeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
       body: _buildBody(),
     );
   }
 
-  _buildAppBar(){
-    return AppBar(
-      title:Text("Recharge") ,
-    );
-  }
+
 
   _buildBody(){
     return Container(

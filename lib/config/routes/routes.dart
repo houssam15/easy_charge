@@ -9,12 +9,10 @@ import '../../core/pages/bottom_navigation_page.dart';
 import '../../core/util/custom_navigation_helper.dart';
 
 class AppRoutes{
-  static final GlobalKey<NavigatorState> parentNavigatorKey =
-  GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> homeTabNavigatorKey =
-  GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> rechargeTabNavigatorKey =
-  GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> parentNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> homeTabNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> settingsTabNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState>  rechargeTabNavigatorKey= GlobalKey<NavigatorState>();
 
   static const String welcomePath = "/";
   static const String homePath = '/home';
@@ -41,13 +39,27 @@ class AppRoutes{
            ],
          ),
          StatefulShellBranch(
+           navigatorKey: settingsTabNavigatorKey,
+           routes: [
+             GoRoute(
+               path: settingsPath,
+               pageBuilder: (context, state) {
+                 return CustomNavigationHelper.getPage(
+                   child: const SettingsPage(),
+                   state: state,
+                 );
+               },
+             ),
+           ],
+         ),
+         StatefulShellBranch(
            navigatorKey: rechargeTabNavigatorKey,
            routes: [
              GoRoute(
                path: rechargePath,
                pageBuilder: (context, state) {
                  return CustomNavigationHelper.getPage(
-                   child: const SettingsPage(),
+                   child:const RechargeByScanFeature.RechargeScreen(),
                    state: state,
                  );
                },
@@ -77,16 +89,6 @@ class AppRoutes{
        pageBuilder: (context, state) {
          return CustomNavigationHelper.getPage(
            child: const WelcomePage(),
-           state: state,
-         );
-       },
-     ),
-     GoRoute(
-       parentNavigatorKey: parentNavigatorKey,
-       path: rechargePath,
-       pageBuilder: (context, state) {
-         return CustomNavigationHelper.getPage(
-           child: const RechargeByScanFeature.RechargeScreen(),
            state: state,
          );
        },
