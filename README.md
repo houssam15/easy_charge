@@ -1,12 +1,16 @@
 recharge_by_scan
+
 Recharge by Scan is an innovative Flutter application designed to simplify the process of recharging mobile accounts through scanning recharge cards. This project serves as a starting point for developers looking to build mobile applications with Flutter, providing a clean and functional template to get you started.
 
 Features
+
 User-Friendly Interface: Intuitive navigation and a modern design make it easy for users to navigate the app.
 Recharge Card Scanning: Users can effortlessly scan their recharge cards to quickly input the necessary information.
 Multi-Operator Support: Supports various mobile operators, allowing users to choose their preferred provider.
 Offers and Promotions: Provides users with information on available offers and promotions related to their selected operator.
+
 Getting Started
+
 This project serves as a foundational template for Flutter applications. Whether you are a beginner or an experienced developer, you can use this project to jumpstart your Flutter development journey.
 
 Resources
