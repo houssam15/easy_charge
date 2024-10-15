@@ -46,6 +46,10 @@
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
     }
 
+    goToRechargePage(){
+        CustomNavigationHelper.router.push(AppRoutes.rechargePath);
+    }
+
     @override
     Widget build(BuildContext context) {
       return Scaffold(
@@ -59,25 +63,11 @@
           padding: const EdgeInsets.all(20.0),
           child: Stack(
             children: [
-              InkWell (
-                onTap: (){
-                  print("Skip clicked");
-                  CustomNavigationHelper.router.push(AppRoutes.rechargePath);
-                },
-                child:  Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Add padding for better tap area
-                    alignment: Alignment.topRight,
-                    child: const Text("Skip"),
-                  ),
-                ),
-              ),
               PageView.builder(
                   itemCount: demoData.length,
                   scrollDirection: Axis.horizontal,
                   onPageChanged: (index){
-                      setState(() {
+                      setState((){
                         currentIndex = index;
                       });
                   },
@@ -85,7 +75,7 @@
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 50),
+                        SizedBox(height:demoData.length == index + 1? 10:50),
                         Container(
                           height:MediaQuery.of(context).size.height/2,
                           child:Image.asset(demoData[index].image),
@@ -109,6 +99,29 @@
                           textAlign: TextAlign.center,
                         ),
                         const Spacer(),
+                        if(demoData.length == index + 1)
+                        InkWell(
+                          onTap: ()=>goToRechargePage(),
+                          child: Container(
+                            height:50,
+                            width: MediaQuery.of(context).size.width*2/3,
+                            decoration:BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius:BorderRadius.circular(50),
+                            ),
+                            child:Center(
+                                child: Text(
+                                    "START",
+                                    style:TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).colorScheme.onPrimary
+                                    )
+                                )
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
                       ],
                     );
                   },
@@ -129,6 +142,20 @@
                             borderRadius: BorderRadius.circular(5)
                         ),
                       )
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: InkWell(
+                  onTap: ()=>goToRechargePage(),
+                  child:Text(
+                      "Skip",
+                      style: TextStyle(
+                        letterSpacing:2,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSecondary
+                      ),
                   ),
                 ),
               ),

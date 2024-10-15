@@ -15,6 +15,9 @@ class GlobalThemData{
         scaffoldBackgroundColor: colorScheme.background,
         highlightColor: Colors.transparent,
         focusColor: focusColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: colorScheme.primary.withOpacity(0.3)
+        )
     );
   }
 
@@ -30,6 +33,7 @@ class GlobalThemData{
     surface: Color(0xFFFAFBFB),
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,
+    surfaceTint: Colors.black
   );
 
   static const ColorScheme darkColorScheme = ColorScheme(
