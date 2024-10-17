@@ -16,27 +16,28 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> {
 
   @override
   void initState() {
-    widget.cameraService.initializeCamera(
-            ()=>setState((){
+    /*widget.cameraService.initializeCamera(
+            onInitialized: ()=>setState((){
                 widget.cameraService.refresh();
             })
-    );
+    );*/
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.cameraService.isInitialized()==false) {
+   /* if (widget.cameraService.isInitialized()==false) {
       return Center(child: CircularProgressIndicator());
-    }
+    }*/
     return Container(
       width: double.infinity,
-        child: CameraPreview(widget.cameraService.getController()!,));
+        child:/* CameraPreview(widget.cameraService.getController()!,)*/Text("")
+        );
   }
 
   @override
   void dispose() {
-    widget.cameraService.getController()?.dispose();
+    //widget.cameraService.getController()?.dispose();
     super.dispose();
   }
 }

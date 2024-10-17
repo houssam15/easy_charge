@@ -46,4 +46,13 @@ class SimCardEntity {
      }
   }
 
+  String getCodeLength(){
+    switch(operator){
+      case Operator.TISALAT: return "14";
+      case Operator.ORANGE: return "16";
+      case Operator.INWI: return "16";
+      default: return "14";
+    }
+  }
+
 }

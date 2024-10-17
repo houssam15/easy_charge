@@ -23,8 +23,11 @@ class _HomePageState extends State<HomePage> {
   _buildBody(){
     return Column(
       children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height/15,
+        ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: RichText(
             text: TextSpan(
               children: [

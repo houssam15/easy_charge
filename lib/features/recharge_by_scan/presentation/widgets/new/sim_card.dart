@@ -5,8 +5,10 @@ import "../../../../../core/constants/app_images.dart";
 import "../../../../../core/widgets/operator_item.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 class SimCardWidget extends StatefulWidget {
-  const SimCardWidget({super.key,required this.simCard});
+  const SimCardWidget({super.key,required this.simCard,required this.onTap ,required this.isSelected});
   final SimCardEntity simCard;
+  final dynamic onTap;
+  final bool isSelected;
   @override
   State<SimCardWidget> createState() => _SimCardWidgetState();
 }
@@ -21,61 +23,73 @@ class _SimCardWidgetState extends State<SimCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: Container(
-          height: 70,
-          child: Card(
-            child: Stack(
-              children: [
-                if(operator != Operator.UNKOWN)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.2,
-                      child:Image.asset(
-                             widget.simCard.getOperatorPicture(operator),
-                             fit: BoxFit.fitWidth,
-                             width: MediaQuery.of(context).size.width,
-                        ),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Image.asset(
-                                widget.simCard.slotNumber==0?AppImages.sim1Image:AppImages.sim2Image,
-                                width: 10,
-                            ),
+        child: InkWell(
+          onTap: widget.onTap,
+          child: Container(
+            height: 70,
+            child: Card(
+              child: Stack(
+                children: [
+                  if(operator != Operator.UNKOWN)
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.2,
+                        child:ColorFiltered(
+                          colorFilter: widget.isSelected?
+                            const ColorFilter.mode(
+                                Colors.transparent,
+                                BlendMode.multiply
+                            ):
+                            const ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.saturation
+                          ),
+                          child: Image.asset(
+                            widget.simCard.getOperatorPicture(operator),
+                            fit: BoxFit.fitWidth,
+                            width: MediaQuery.of(context).size.width,
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FaIcon(
-                              FontAwesomeIcons.phone,
-                              size: 14,
-                              color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.asset(
+                                  widget.simCard.slotNumber==0?AppImages.sim1Image:AppImages.sim2Image,
+                                  width: 10
+                              ),
                             ),
-                            Text(
-                                "0682749205",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500
-                                ),
-                            )
-                          ],
-                        ),
-                    ],
-                  ),
-                )
-              ],
+                          ),
+                          const SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.phone,
+                                size: 14,
+                                color:widget.isSelected?Theme.of(context).colorScheme.primary:Colors.grey,
+                              ),
+                              Text(
+                                  "0682749205",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: widget.isSelected?Theme.of(context).colorScheme.onPrimary:Colors.grey
+                                  ),
+                              )
+                            ],
+                          ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         )

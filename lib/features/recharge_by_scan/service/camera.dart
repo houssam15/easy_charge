@@ -5,36 +5,55 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 class CameraService{
   CameraController? _cameraController;
-  dynamic _refresh;
+  bool isCameraDisposed = false;
+  bool isStreamingStarted = false;
+
   void setController(CameraController controller){
     _cameraController = controller;
-  }
-
-  bool isInitialized(){
-    return _cameraController?.value.isInitialized??false;
   }
 
   CameraController? getController(){
     return _cameraController;
   }
 
-  Future<void> initializeCamera(dynamic onInitialized) async{
+  bool isInitialized(){
+    return _cameraController?.value.isInitialized??false;
+  }
+
+  streamingStarted(){
+    isStreamingStarted = true;
+  }
+  streamingStoped(){
+    isStreamingStarted = false;
+  }
+
+   dispose(){
+    _cameraController?.dispose()
+    .then((value){
+      isCameraDisposed = true;
+      if(kDebugMode) print("is disposed from dispose $isCameraDisposed");
+    })
+    .catchError((error){
+      if(kDebugMode) print("Failed to dispose camera !");
+    });
+  }
+
+  Future<void> initializeCamera() async{
     try{
       final cameras = await availableCameras();
       if(cameras.isEmpty) return;
       setController(
         CameraController(
            cameras[0],
-           ResolutionPreset.high,
+           ResolutionPreset.low,
            enableAudio: false,
-           imageFormatGroup:Platform.isAndroid?ImageFormatGroup.nv21:ImageFormatGroup.bgra8888
+           imageFormatGroup:Platform.isAndroid?ImageFormatGroup.nv21:ImageFormatGroup.bgra8888,
         )
       );
       await _cameraController?.initialize();
     }catch(err){
       print(err);
     }
-    onInitialized();
   }
 
   InputImage getInputImageFromCameraImage(CameraImage cameraImage) {
@@ -61,12 +80,23 @@ class CameraService{
     );
   }
 
-  void setRefresh(Function refresh){
-    _refresh = refresh;
+  Future<void> startCameraControllerImageStream({
+    required CameraController controller,
+    required void Function(CameraImage image) listener,
+    int skipFrameCount = 1,
+  }) async {
+    await controller.startImageStream((image) {
+      if (skipFrameCount > 0) {
+        skipFrameCount--;
+        return;
+      }
+
+      listener(image);
+    });
   }
 
-  void refresh(){
-    if(_refresh is Function) _refresh();
+  bool isStreamingImages(){
+    return _cameraController?.value.isStreamingImages??false;
   }
 
 }

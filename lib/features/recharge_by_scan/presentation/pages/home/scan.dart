@@ -14,9 +14,9 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   void initState() {
-    _cameraService.setRefresh((){
+   /* _cameraService.setRefresh((){
       setState(() {});
-    });
+    });*/
     super.initState();
   }
   @override
