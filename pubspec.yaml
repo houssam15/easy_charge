@@ -25,6 +25,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.13.1
   camera: ^0.11.0+2
   go_router: ^14.3.0
+  font_awesome_flutter: ^10.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

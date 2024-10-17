@@ -71,6 +71,7 @@ class _RechargeAccountScreenState extends State<RechargeAccountScreen> {
 
         if(state is RemoteRechargeAccountInitialState){
           simCards = state.data;
+          //RemoteRechargeAccountInitial
           context.read<RemoteRechargeAccountBloc>().add(const RemoteRechargeAccountListenSms(true));
         }
 

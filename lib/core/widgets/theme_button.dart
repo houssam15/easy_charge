@@ -51,22 +51,23 @@ class ThemeButton extends StatelessWidget {
                           color: this.borderColor,
                           width: this.borderWidth)
                   ),
-                  child: this.icon == null ?
-                  Text(this.label!,
+                  child: icon == null ?
+                  Text(label!,
                       style: TextStyle(
                           fontSize: labelSize,
-                          color: this.labelColor,
+                          color: labelColor,
                           fontWeight: FontWeight.bold)) :
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      this.icon!,
-                      SizedBox(width: 10),
-                      Text(this.label!,
+                      Text(label!,
                           style: TextStyle(
                               fontSize: 16,
-                              color: this.labelColor,
-                              fontWeight: FontWeight.bold)),
+                              color: labelColor,
+                              fontWeight: FontWeight.bold)
+                      ),
+                      const SizedBox(width: 10),
+                      icon!,
                     ],
                   )
               ),

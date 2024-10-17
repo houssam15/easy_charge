@@ -13,12 +13,12 @@ class AppRoutes{
   static final GlobalKey<NavigatorState> homeTabNavigatorKey = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> settingsTabNavigatorKey = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState>  rechargeTabNavigatorKey= GlobalKey<NavigatorState>();
-
+  static final GlobalKey<NavigatorState> rechargeGuideTabNavigatorKey= GlobalKey<NavigatorState>();
   static const String welcomePath = "/";
   static const String homePath = '/home';
   static const String settingsPath = '/settings';
-
   static const String rechargePath = '/home/recharge';
+  static const String rechargeGuidePath = '/home/recharge/guide';
 
   static final main_pages_routes = [
      StatefulShellRoute.indexedStack(
@@ -59,7 +59,21 @@ class AppRoutes{
                path: rechargePath,
                pageBuilder: (context, state) {
                  return CustomNavigationHelper.getPage(
-                   child:const RechargeByScanFeature.RechargeScreen(),
+                   child:const RechargeByScanFeature.RechargePage(),
+                   state: state,
+                 );
+               },
+             ),
+           ],
+         ),
+         StatefulShellBranch(
+           navigatorKey: rechargeGuideTabNavigatorKey,
+           routes: [
+             GoRoute(
+               path: rechargeGuidePath,
+               pageBuilder: (context, state) {
+                 return CustomNavigationHelper.getPage(
+                   child:const RechargeByScanFeature.OnBoardPage(),
                    state: state,
                  );
                },

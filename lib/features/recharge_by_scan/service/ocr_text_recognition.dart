@@ -6,20 +6,27 @@ import 'dart:io';
 
 class OcrTextRecognition{
   TextRecognizer textRecognizer = TextRecognizer();
-  Future<bool> recognizeText(
-      {required InputImage inputImage,required dynamic onDone,required dynamic onProcess}) async {
+  bool _stopRecognization = false;
+
+  bool get stopRecognization => _stopRecognization;
+
+  set stopRecognization(bool v){
+    _stopRecognization = v;
+  }
+
+  Future<void> recognizeText(
+      {required InputImage inputImage,required dynamic onDone,required dynamic onProcess,String? codeLength}) async {
     try {
+      if(stopRecognization) return;
       final recognizedText = await textRecognizer.processImage(inputImage);
-      RegExp regExp = RegExp(r'(\d\s*){14}');
+      RegExp regExp = RegExp(r'(\d\s*){' + codeLength.toString() + '}');
       Iterable<Match> matches = regExp.allMatches(recognizedText.text);
       String results = matches.map((match) => match.group(0)!.replaceAll(' ', '')).join();
       if (results.isNotEmpty) onDone(results);
       else onProcess(recognizedText.text);
-
     } catch (e) {
-      print('Error: $e');
+      if(kDebugMode) print('Error: $e');
     }
-    return false;
   }
 
 }
