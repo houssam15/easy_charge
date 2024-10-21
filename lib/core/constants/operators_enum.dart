@@ -1,0 +1,1 @@
+enum Operator{TISALAT,ORANGE,INWI,UNKOWN}

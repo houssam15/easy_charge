@@ -3,7 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recharge_by_scan/core/constants/app_images.dart';
 import 'package:recharge_by_scan/features/recharge_by_scan/domain/entities/offer.dart';
 
-enum Operator{TISALAT,ORANGE,INWI,UNKOWN}
+import '../../../../core/constants/operators_enum.dart';
+
 
 class SimCardEntity {
   final String number;
@@ -52,6 +53,15 @@ class SimCardEntity {
       case Operator.ORANGE: return "16";
       case Operator.INWI: return "16";
       default: return "14";
+    }
+  }
+
+  String getRechargeNumber(){
+    switch(operator){
+      case Operator.TISALAT: return "555";
+      case Operator.ORANGE: return "555";
+      case Operator.INWI: return "121";
+      default: return "unknown";
     }
   }
 

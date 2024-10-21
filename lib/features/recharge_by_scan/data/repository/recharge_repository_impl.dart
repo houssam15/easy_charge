@@ -22,7 +22,15 @@ class RechargeRepositoryImpl implements RechargeRepository{
   Future<DataState> rechargeAccount(RechargeEntity re) async{
     try{
       RechargeModel rm = RechargeModel.fromEntity(re);
-      DataState<String,String> dataState =await _smsService.send(simSlot: rm.simCard.slotNumber,message: rm.getMessage(), number: SimCardModel.fromEntity(rm.simCard).getRechargeNumber());
+      DataState<String,String> dataState =await _smsService
+                            .send(
+                                simSlot: rm.simCard.slotNumber,
+                                message: rm.getMessage(rm.simCard.getOperator().operator),
+                                number: SimCardModel
+                                        .fromEntity(rm.simCard)
+                                        .getOperator()
+                                        .getRechargeNumber()
+                            );
       if(dataState is DataFailed) return DataFailed(dataState.error);
       return const DataSuccess("Recharge sent , check your messages !");
     } catch(err){

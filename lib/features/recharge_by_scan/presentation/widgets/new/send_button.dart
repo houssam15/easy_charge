@@ -2,7 +2,9 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
 class SendButtonWidget extends StatelessWidget {
-  const SendButtonWidget({super.key});
+  const SendButtonWidget({super.key,required this.onTap,this.isProcessing=false});
+  final dynamic onTap;
+  final bool isProcessing;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,16 @@ class SendButtonWidget extends StatelessWidget {
           ),
         )
       ),
-      onPressed: () {},
-      child: Text(
+      onPressed: onTap,
+      child:isProcessing?
+          SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary
+              )
+          )
+          :Text(
         "Send",
         style: TextStyle(
             color: Theme.of(context).colorScheme.primary,

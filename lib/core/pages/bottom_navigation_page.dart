@@ -46,8 +46,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'settings',
-          ),
+            label: 'Settings',
+          )
         ]
     );
   }

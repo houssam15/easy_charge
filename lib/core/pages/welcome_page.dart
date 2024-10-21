@@ -23,6 +23,12 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   void _simulateClick(){
     CustomNavigationHelper.router.push(AppRoutes.homePath);
   }
@@ -67,36 +73,6 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                 ),
                const Spacer(),
-               /*Container(
-                  height: MediaQuery.of(context).size.height*0.3,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50)
-                      )
-                  ),
-                  child: Center(
-                    child:ThemeButton(
-                        label: "NEXT",
-                        icon: Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              Icons.keyboard_arrow_right_sharp,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              size: 25,
-                            ),
-                        ),
-                        labelSize: 22,
-                        labelColor: Theme.of(context).colorScheme.onPrimary,
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 300,
-                        height: 80,
-                        onClick: ()=>CustomNavigationHelper.router.push(AppRoutes.homePath)
-                    ),
-                  ),
-                )*/
               ],
             ),
           )

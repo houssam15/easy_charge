@@ -12,5 +12,4 @@ class AppImages{
   static String sim2Image = "assets/imgs/sim2.webp";
 
 
-
 }

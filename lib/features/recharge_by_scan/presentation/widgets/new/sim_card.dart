@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/domain/entities/sim_card.dart";
 
 import "../../../../../core/constants/app_images.dart";
+import "../../../../../core/constants/operators_enum.dart";
 import "../../../../../core/widgets/operator_item.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 class SimCardWidget extends StatefulWidget {

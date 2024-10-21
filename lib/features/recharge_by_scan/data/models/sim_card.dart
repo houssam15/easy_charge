@@ -33,8 +33,5 @@ class SimCardModel extends SimCardEntity{
     return cards.map((card)=>card.toEntity()).toList();
   }
 
-  String getRechargeNumber(){
-    return "125";
-  }
 
 }

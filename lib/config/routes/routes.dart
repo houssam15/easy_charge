@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:recharge_by_scan/core/pages/home_page.dart';
 import 'package:recharge_by_scan/core/pages/settings_page.dart';
 import 'package:recharge_by_scan/core/pages/welcome_page.dart';
+import 'package:recharge_by_scan/core/util/local_storage.dart';
 import "package:recharge_by_scan/features/recharge_by_scan/recharge_by_scan.dart" as RechargeByScanFeature;
 
+import '../../core/model/local_storage/secure_item.dart';
 import '../../core/pages/bottom_navigation_page.dart';
 import '../../core/util/custom_navigation_helper.dart';
+import '../../injection_container.dart';
 
 class AppRoutes{
   static final GlobalKey<NavigatorState> parentNavigatorKey = GlobalKey<NavigatorState>();
@@ -76,6 +79,18 @@ class AppRoutes{
                    child:const RechargeByScanFeature.OnBoardPage(),
                    state: state,
                  );
+               },
+               redirect: (context, state) async{
+                  SecItemModel? r1 = await sl.get<LocalStorage>().getOne(LocalStorage.DISABLE_SKIP_ONBOARD_PAGE);
+                  SecItemModel? r2 = await sl.get<LocalStorage>().getOne(LocalStorage.IS_ONBOARD_PASSED);
+                  if(r1?.value==LocalStorage.FALSE && r2?.value==LocalStorage.TRUE) {
+                    return rechargePath;
+                  }else if(r1?.value==LocalStorage.FALSE){
+                    await sl.get<LocalStorage>().add([SecItemModel(LocalStorage.IS_ONBOARD_PASSED,  LocalStorage.TRUE)]);
+                    return rechargeGuidePath;
+                  }else{
+                    return rechargeGuidePath;
+                  }
                },
              ),
            ],

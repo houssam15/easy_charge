@@ -1,5 +1,6 @@
 import "package:get_it/get_it.dart";
 import "package:dio/dio.dart";
+import "package:recharge_by_scan/core/util/local_storage.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/data/data_sources/remote/recharge_api_service.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/data/repository/recharge_repository_impl.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/domain/repository/recharge_repository.dart";
@@ -13,6 +14,8 @@ import "features/recharge_by_scan/domain/usecases/get_user_accounts.dart";
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  //Initialize Settings
+  sl.registerSingleton<LocalStorage>(await LocalStorage().initialize());
   //Dio
   sl.registerSingleton<Dio>(Dio());
   //Dependencies

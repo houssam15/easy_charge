@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
+import "package:recharge_by_scan/config/routes/routes.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/new/offer.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/new/send_button.dart";
+import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/received_sms.dart";
+import "../../../../core/util/custom_navigation_helper.dart";
+import "../../domain/entities/recharge.dart";
 import "../../domain/entities/sim_card.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_bloc.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_event.dart";
@@ -25,6 +30,7 @@ class _RechargePageState extends State<RechargePage> {
   List<int> visibleSteps = [1];
   String? selectedOffer;
   String? scannedCode;
+  bool isProcessing = false;
 
   @override
   void initState() {
@@ -32,18 +38,22 @@ class _RechargePageState extends State<RechargePage> {
     super.initState();
   }
 
+  listenSms(bool activate){
+    context.read<RemoteRechargeAccountBloc>().add(RemoteRechargeAccountListenSms(activate));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
-      appBar: _buildAppbar(),
+      //appBar: _buildAppbar(),
       body: _buildBody(),
     );
   }
 
   _buildAppbar(){
     return AppBar(
-      title: Center(
+      title:const Center(
           child: Text(
               "Recharge account",
               style: TextStyle(
@@ -61,8 +71,36 @@ class _RechargePageState extends State<RechargePage> {
         if(state is RemoteRechargeAccountInitialState){
           setState(() {
             simCards = state.data;
-            //selectedSimCard = simCards[0];
           });
+        }
+
+        if(state is RemoteRechargeAccountNewSmsReceivedStatus){
+          listenSms(false);
+          setState((){
+            isProcessing = false;
+          });
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showMaterialBanner(
+            MaterialBanner(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                content:ReceivedSms(sms: state.data!),
+                actions: [
+                  TextButton(
+                      onPressed: (){
+                          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                          if(context.canPop()) context.pop();
+                          CustomNavigationHelper.router.push(AppRoutes.homePath);
+                      },
+                      child: const Text(
+                          "Back",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      )
+                  )
+                ]
+            )
+          );
         }
       },
       builder: (context,state){
@@ -73,8 +111,32 @@ class _RechargePageState extends State<RechargePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Container(
+                    padding:const EdgeInsets.all(8),
+                    color: Colors.yellow.withOpacity(0.5),
+                    child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.warning),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                                "Please don't send SMS more than 3 times to avoid blocking your SIM card",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.orange
+                                ),
+                                softWrap: true
+                            ),
+                          )
+
+                        ]
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                   Text(
-                      "Please follow steps below to recharge your account",
+                      "Please follow steps below to charge your account",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 15,
@@ -89,14 +151,32 @@ class _RechargePageState extends State<RechargePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20),
-                      const StepWidget(step: "1",label: "Choose your card"),
+                      const StepWidget(step: "1",label: "Choose your SIM"),
                       const SizedBox(height: 10),
-                      Row(
+                      simCards.isEmpty ?
+                      const Center(
+                         child: Row(
+                           children: [
+                             Icon(
+                                 Icons.sim_card_alert_outlined,
+                                 color: Colors.grey
+                             ),
+                             Text(
+                               "No SIM found",
+                               style: TextStyle(
+                                 color: Colors.grey
+                               ),
+                             ),
+                           ],
+                         )
+                       )
+                      :Row(
                         children: simCards.map<Widget>(
                                 (elm)=>SimCardWidget(
                                     simCard: elm,
                                     onTap:()async{
                                       bool canContinue = true;
+                                      ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
                                       if(selectedSimCard is SimCardEntity && scannedCode is String){
                                         canContinue = await showDialog(
                                                 context: context,
@@ -108,6 +188,7 @@ class _RechargePageState extends State<RechargePage> {
                                       selectedSimCard = elm;
                                       selectedOffer = null;
                                       scannedCode = null;
+                                      isProcessing = false;
                                       if(!visibleSteps.contains(2)) visibleSteps.add(2);
                                       else{
                                         visibleSteps.remove(3);
@@ -194,7 +275,7 @@ class _RechargePageState extends State<RechargePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20),
-                      const StepWidget(step: "4",label: "Send Sms"),
+                      StepWidget(step: "4",label: "Send Sms ${selectedSimCard is SimCardEntity?"To ${selectedSimCard?.getOperator().getRechargeNumber()}":""}"),
                       const SizedBox(height:20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -203,12 +284,67 @@ class _RechargePageState extends State<RechargePage> {
                           const SizedBox(width: 5),
                           OfferWidget(offer: selectedOffer!),
                           const SizedBox(width: 5),
-                          const SendButtonWidget()
+                          SendButtonWidget(
+                            isProcessing: isProcessing,
+                            onTap:isProcessing? null : (){
+                              isProcessing = true;
+                              setState(() {});
+                              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                              if(selectedSimCard is SimCardEntity && scannedCode is String && selectedOffer is String){
+                                  listenSms(true);
+                                  context.read<RemoteRechargeAccountBloc>().add(
+                                    RemoteRechargeAccount(
+                                        RechargeEntity(
+                                          code: scannedCode!, // Sample recharge code
+                                          simCard: selectedSimCard!, // Selected SIM card
+                                          offer: selectedOffer!, // Example offer
+                                        ),
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          duration:const Duration(minutes: 10),
+                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                          content:const Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircularProgressIndicator(),
+                                              SizedBox(width: 5),
+                                              Text("Waiting for confirmation sms ...")
+                                            ],
+                                          )
+                                      )
+                                  );
+                              }else{
+                                isProcessing = false;
+                                setState(() {});
+                                ScaffoldMessenger.of(context).showMaterialBanner(
+                                  MaterialBanner(
+                                    backgroundColor: Theme.of(context).colorScheme.error,
+                                    content:Text(
+                                        'Something wrong , please try later !',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onError
+                                        )
+                                    ),
+                                    leading:const Icon(Icons.error),
+                                    actions: <Widget>[
+                                        TextButton(
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                                              if(context.canPop()) context.pop();
+                                            },
+                                            child:const Text("Undo")
+                                        )
+                                    ],
+                                  ),
+                                );
+                              }
+                          })
                         ],
                       )
                     ],
                   ),
-
                 ],
               ),
             ),
