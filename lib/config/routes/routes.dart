@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:recharge_by_scan/core/pages/home_page.dart';
 import 'package:recharge_by_scan/core/pages/settings_page.dart';
-import 'package:recharge_by_scan/core/pages/welcome_page.dart';
 import 'package:recharge_by_scan/core/util/local_storage.dart';
 import "package:recharge_by_scan/features/recharge_by_scan/recharge_by_scan.dart" as RechargeByScanFeature;
 
@@ -17,7 +16,6 @@ class AppRoutes{
   static final GlobalKey<NavigatorState> settingsTabNavigatorKey = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState>  rechargeTabNavigatorKey= GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> rechargeGuideTabNavigatorKey= GlobalKey<NavigatorState>();
-  static const String welcomePath = "/";
   static const String homePath = '/home';
   static const String settingsPath = '/settings';
   static const String rechargePath = '/home/recharge';
@@ -112,15 +110,6 @@ class AppRoutes{
    ];
 
    static final other_routes = [
-     GoRoute(
-       parentNavigatorKey: parentNavigatorKey,
-       path: welcomePath,
-       pageBuilder: (context, state) {
-         return CustomNavigationHelper.getPage(
-           child: const WelcomePage(),
-           state: state,
-         );
-       },
-     ),
+
    ];
 }

@@ -4,9 +4,9 @@ import 'package:recharge_by_scan/features/recharge_by_scan/domain/entities/sim_c
 class SimCardModel extends SimCardEntity{
 
   SimCardModel({
-    required String number,
-    required String name,
-    required int slotNumber
+    required String? number,
+    required String? name,
+    required int? slotNumber
   }):super(
     number: number,
     name: name,

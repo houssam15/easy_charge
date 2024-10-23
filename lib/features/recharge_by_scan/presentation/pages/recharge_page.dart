@@ -2,20 +2,20 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:recharge_by_scan/config/routes/routes.dart";
-import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/new/offer.dart";
-import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/new/send_button.dart";
-import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/received_sms.dart";
+import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/offer.dart";
+import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/send_button.dart";
 import "../../../../core/util/custom_navigation_helper.dart";
 import "../../domain/entities/recharge.dart";
 import "../../domain/entities/sim_card.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_bloc.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_event.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_state.dart";
-import "../widgets/new/code.dart";
-import "../widgets/new/confirmation_alert.dart";
-import "../widgets/new/scan_alert_content.dart";
-import "../widgets/new/sim_card.dart";
-import "../widgets/new/step.dart";
+import "../widgets/code.dart";
+import "../widgets/confirmation_alert.dart";
+import "../widgets/received_sms.dart";
+import "../widgets/scan_alert_content.dart";
+import "../widgets/sim_card.dart";
+import "../widgets/step.dart";
 
 class RechargePage extends StatefulWidget {
   const RechargePage({super.key});
@@ -88,11 +88,9 @@ class _RechargePageState extends State<RechargePage> {
                   TextButton(
                       onPressed: (){
                           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                          if(context.canPop()) context.pop();
-                          CustomNavigationHelper.router.push(AppRoutes.homePath);
                       },
                       child: const Text(
-                          "Back",
+                          "Ok",
                         style: TextStyle(
                           color: Colors.white
                         ),
@@ -275,7 +273,10 @@ class _RechargePageState extends State<RechargePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20),
-                      StepWidget(step: "4",label: "Send Sms ${selectedSimCard is SimCardEntity?"To ${selectedSimCard?.getOperator().getRechargeNumber()}":""}"),
+                      FutureBuilder(
+                          future: selectedSimCard?.getOperator().getRechargeNumber(),
+                          builder: (context, snapshot) => StepWidget(step: "4",label: "Send Sms ${selectedSimCard is SimCardEntity?"To ${snapshot.data}":""}"),
+                      ),
                       const SizedBox(height:20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -305,12 +306,38 @@ class _RechargePageState extends State<RechargePage> {
                                       SnackBar(
                                           duration:const Duration(minutes: 10),
                                           backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                                          content:const Row(
+                                          content:Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              CircularProgressIndicator(),
-                                              SizedBox(width: 5),
-                                              Text("Waiting for confirmation sms ...")
+                                              const SizedBox(
+                                                  width:20,
+                                                  height: 20,
+                                                  child: CircularProgressIndicator(color: Colors.white,strokeWidth: 2,)
+                                              ),
+                                              const Spacer(),
+                                              const Text("Waiting for confirmation sms ..."),
+                                              const Spacer(),
+                                              TextButton(
+                                                  onPressed: (){
+                                                      listenSms(false);
+                                                      isProcessing = false;
+                                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                      setState(() {});
+                                                  },
+                                                  child: Container(
+                                                    padding:const EdgeInsets.symmetric(horizontal: 4,vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      color: Colors.white
+                                                    ),
+                                                    child: Text(
+                                                        "Cancel",
+                                                        style: TextStyle(
+                                                            color: Theme.of(context).colorScheme.primary,
+                                                        )
+                                                    ),
+                                                  )
+                                              )
                                             ],
                                           )
                                       )

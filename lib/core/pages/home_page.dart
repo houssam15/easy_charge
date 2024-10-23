@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:recharge_by_scan/core/widgets/operator_item.dart";
 import "../../config/routes/routes.dart";
@@ -15,8 +16,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: _buildBody(),
+      ),
     );
   }
 

@@ -2,8 +2,8 @@ import "package:camera/camera.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
-import "../../../service/camera.dart";
-import "../../../service/ocr_text_recognition.dart";
+import "../../service/camera.dart";
+import "../../service/ocr_text_recognition.dart";
 
 class ScanAlertContentWidget extends StatefulWidget {
   ScanAlertContentWidget({super.key,required this.onDone,required this.codeLength});

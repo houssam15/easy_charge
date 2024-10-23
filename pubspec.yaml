@@ -28,6 +28,8 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   flutter_secure_storage: ^9.2.2
   settings_ui: ^2.0.2
+  #mobile_number: ^2.1.1
+  flutter_sms_plus: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -37,6 +39,10 @@ dev_dependencies:
   retrofit_generator: ^9.1.2
   floor_generator: ^1.5.0
   build_runner: ^2.4.12
+  #flutter_launcher_icons: ^0.14.1
+  #icons_launcher: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.2
 flutter:
   uses-material-design: true
   assets:

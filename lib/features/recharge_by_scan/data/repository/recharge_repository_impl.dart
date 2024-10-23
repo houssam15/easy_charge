@@ -26,7 +26,7 @@ class RechargeRepositoryImpl implements RechargeRepository{
                             .send(
                                 simSlot: rm.simCard.slotNumber,
                                 message: rm.getMessage(rm.simCard.getOperator().operator),
-                                number: SimCardModel
+                                number: await SimCardModel
                                         .fromEntity(rm.simCard)
                                         .getOperator()
                                         .getRechargeNumber()

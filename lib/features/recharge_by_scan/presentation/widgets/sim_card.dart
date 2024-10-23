@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/domain/entities/sim_card.dart";
 
-import "../../../../../core/constants/app_images.dart";
-import "../../../../../core/constants/operators_enum.dart";
-import "../../../../../core/widgets/operator_item.dart";
+import "../../../../core/constants/app_images.dart";
+import "../../../../core/constants/operators_enum.dart";
+import "../../../../core/widgets/operator_item.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 class SimCardWidget extends StatefulWidget {
   const SimCardWidget({super.key,required this.simCard,required this.onTap ,required this.isSelected});
@@ -68,6 +68,7 @@ class _SimCardWidgetState extends State<SimCardWidget> {
                             ),
                           ),
                           const SizedBox(height: 5),
+                          if(widget.simCard.number !=null)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +79,7 @@ class _SimCardWidgetState extends State<SimCardWidget> {
                                 color:widget.isSelected?Theme.of(context).colorScheme.primary:Colors.grey,
                               ),
                               Text(
-                                  "0682749205",
+                                  widget.simCard.number??"no phone",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     color: widget.isSelected?Theme.of(context).colorScheme.onPrimary:Colors.grey

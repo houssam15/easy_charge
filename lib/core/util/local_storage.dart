@@ -9,15 +9,21 @@ class LocalStorage{
     static String IS_INITIALIZED = "is_initialized";
     static String IS_ONBOARD_PASSED = "is_onboard_passed";
     static String DISABLE_SKIP_ONBOARD_PAGE = "disable_skip_onboard_page";
+    static String MAROC_TELECOM_SMS_NUMBER = "maroc_telecom_sms_number";
+    static String ORANGE_SMS_NUMBER = "orange_sms_number";
+    static String INWI_SMS_NUMBER = "inwi_sms_number";
     static String TRUE = "Y";
     static String FALSE = "N";
 
-    final List<String> rows = [IS_INITIALIZED,IS_ONBOARD_PASSED,DISABLE_SKIP_ONBOARD_PAGE];
+    final List<String> authorizedSettings = [IS_INITIALIZED,IS_ONBOARD_PASSED,DISABLE_SKIP_ONBOARD_PAGE,MAROC_TELECOM_SMS_NUMBER,ORANGE_SMS_NUMBER,INWI_SMS_NUMBER];
 
     final List<SecItemModel> defaultLocalVariables = [
       SecItemModel(IS_INITIALIZED, TRUE,readOnly: true),
       SecItemModel(IS_ONBOARD_PASSED, FALSE),
-      SecItemModel(DISABLE_SKIP_ONBOARD_PAGE, FALSE,icon: Icons.developer_board,title: "Show tutorial",description: "if you enable it you will always see tutorials (not recommended)")
+      SecItemModel(DISABLE_SKIP_ONBOARD_PAGE, FALSE,icon: Icons.developer_board,title: "Show tutorial",description: "if you enable it you will always see tutorials (not recommended)"),
+      SecItemModel(MAROC_TELECOM_SMS_NUMBER, "555",icon: Icons.sms,title: "Maroc telecom",isCheckbox: false),
+      SecItemModel(ORANGE_SMS_NUMBER, "555",icon: Icons.sms,title: "Orange",isCheckbox: false),
+      SecItemModel(INWI_SMS_NUMBER, "121",icon: Icons.sms,title: "Inwi",isCheckbox: false)
     ];
 
     AndroidOptions _getAndroidOptions() => const AndroidOptions(
@@ -35,7 +41,7 @@ class LocalStorage{
 
     List<SecItemModel> _validate(List<SecItemModel> params,{bool ignoreReadOnly=false}){
       return params
-          .where((elm)=>rows.contains(elm.key)==true && (elm.readOnly==false || ignoreReadOnly))
+          .where((elm)=>authorizedSettings.contains(elm.key)==true && (elm.readOnly==false || ignoreReadOnly))
           .map((elm)=>SecItemModel(elm.key, elm.value))
           .toList();
     }

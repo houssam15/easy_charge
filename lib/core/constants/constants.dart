@@ -1,2 +1,2 @@
 const String rechargeApiBaseURL = "";
-const String initialRoute = "/";
+const String initialRoute = "/home";

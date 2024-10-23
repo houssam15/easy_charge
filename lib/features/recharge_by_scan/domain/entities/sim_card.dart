@@ -1,22 +1,24 @@
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recharge_by_scan/core/constants/app_images.dart';
+import 'package:recharge_by_scan/core/util/local_storage.dart';
 import 'package:recharge_by_scan/features/recharge_by_scan/domain/entities/offer.dart';
 
 import '../../../../core/constants/operators_enum.dart';
+import '../../../../injection_container.dart';
 
 
 class SimCardEntity {
-  final String number;
-  final String name;
-  final int slotNumber;
+  final String? number;
+  final String? name;
+  final int? slotNumber;
 
   SimCardEntity({required this.number,required this.name,required this.slotNumber});
 
   Operator operator = Operator.UNKOWN;
 
   bool isKnown(){
-    return Operator.values.where((elm)=>elm.toString() == name.toUpperCase()).isNotEmpty;
+    return Operator.values.where((elm)=>elm.toString() == name?.toUpperCase()).isNotEmpty;
   }
   
   String getOperatorPicture(Operator operator){
@@ -30,7 +32,7 @@ class SimCardEntity {
 
   SimCardEntity getOperator(){
     for(Operator o in Operator.values.where((elm)=>elm!=Operator.UNKOWN)){
-      if(RegExp(o.toString().split('.').last, caseSensitive: false).hasMatch(name)){
+      if(RegExp(o.toString().split('.').last, caseSensitive: false).hasMatch(name.toString())){
         operator = o;
         break;
       }
@@ -40,9 +42,9 @@ class SimCardEntity {
 
   List<String> getOffers(){
      switch(operator){
-       case Operator.TISALAT: return ["*1","*2","*22","*3","*4","*5","*6","*7","*77","*78","*8","*88","*9"];
-       case Operator.ORANGE: return ["*1","*2","*3","*4"];
-       case Operator.INWI: return ["*1","*2","*3","*4","*5","*6","*7","*8","*9"];
+       case Operator.TISALAT: return ["1","2","22","3","4","5","6","7","77","78","8","88","9"];
+       case Operator.ORANGE: return ["1","2","3","4"];
+       case Operator.INWI: return ["1","2","3","4","5","6","7","8","9"];
        default: return [];
      }
   }
@@ -56,11 +58,11 @@ class SimCardEntity {
     }
   }
 
-  String getRechargeNumber(){
+  Future<String> getRechargeNumber()async{
     switch(operator){
-      case Operator.TISALAT: return "555";
-      case Operator.ORANGE: return "555";
-      case Operator.INWI: return "121";
+      case Operator.TISALAT: return (await sl.get<LocalStorage>().getOne(LocalStorage.MAROC_TELECOM_SMS_NUMBER))?.value;
+      case Operator.ORANGE: return (await sl.get<LocalStorage>().getOne(LocalStorage.ORANGE_SMS_NUMBER))?.value;
+      case Operator.INWI: return (await sl.get<LocalStorage>().getOne(LocalStorage.INWI_SMS_NUMBER))?.value;
       default: return "unknown";
     }
   }

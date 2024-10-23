@@ -1,5 +1,5 @@
 class AppImages{
-  static String logoLightImage = "assets/imgs/logo-light.png";
+  static String logoImage = "assets/imgs/splash.png";
   static String inwiOperatorImage = "assets/imgs/inwi.jpg";
   static String orangeOperatorImage = "assets/imgs/orange.jpg";
   static String tisalatOperatorImage = "assets/imgs/tisalat.jpg";
