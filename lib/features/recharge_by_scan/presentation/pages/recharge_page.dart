@@ -2,9 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:recharge_by_scan/config/routes/routes.dart";
+import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/button.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/offer.dart";
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/send_button.dart";
 import "../../../../core/util/custom_navigation_helper.dart";
+import "../../../../core/widgets/my_text_field.dart";
 import "../../domain/entities/recharge.dart";
 import "../../domain/entities/sim_card.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_bloc.dart";
@@ -30,7 +32,74 @@ class _RechargePageState extends State<RechargePage> {
   List<int> visibleSteps = [1];
   String? selectedOffer;
   String? scannedCode;
+  bool isCodeValid = false;
   bool isProcessing = false;
+  final ScrollController _scrollController = ScrollController();
+
+  listenSms(bool activate){
+    context.read<RemoteRechargeAccountBloc>().add(RemoteRechargeAccountListenSms(activate));
+  }
+
+  _saveCode(String code, {dynamic onDone}) {
+    if(!RegExp(r'^\d{' + selectedSimCard!.getCodeLength() + r'}$').hasMatch(code)){
+      isCodeValid = false;
+      hideStep(4);
+    }else{
+      isCodeValid = true;
+      showStep(4);
+      _scrollToEnd();
+    }
+    scannedCode = code;
+    setState(() {});
+    onDone();
+  }
+
+  refreshStep3(){
+    scannedCode = null;
+    isCodeValid = false;
+    hideStep(4);
+    setState(() {});
+  }
+
+  hideStep(int step){
+    if(isStepVisible(step)) visibleSteps.remove(step);
+  }
+
+  showStep(int step){
+    if(!isStepVisible(step)) visibleSteps.add(step);
+  }
+
+  bool isStepVisible(int step){
+    return visibleSteps.contains(step);
+  }
+
+  _openDialogForCode({String? text}){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          TextEditingController controller = TextEditingController(text: text);
+          return AlertDialog(
+            title:const Text("Edit code : "),
+            content: MyTextField(controller,maxLength: int.tryParse(selectedSimCard!.getCodeLength())),
+            actions: [
+              TextButton(onPressed: () => context.pop(), child:const Text("Cancel")),
+              TextButton(onPressed:() => _saveCode(
+                  controller.value.text,
+                  onDone: ()=>context.pop()
+              ), child:const Text("Ok"))
+            ],
+          );
+        }
+    );
+  }
+
+  void _scrollToEnd() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent, // Scroll to end
+      duration: const Duration(milliseconds: 500), // Animation duration
+      curve: Curves.easeOut, // Animation curve
+    );
+  }
 
   @override
   void initState() {
@@ -38,9 +107,12 @@ class _RechargePageState extends State<RechargePage> {
     super.initState();
   }
 
-  listenSms(bool activate){
-    context.read<RemoteRechargeAccountBloc>().add(RemoteRechargeAccountListenSms(activate));
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +175,7 @@ class _RechargePageState extends State<RechargePage> {
       },
       builder: (context,state){
         return SingleChildScrollView(
+          controller: _scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 8.0),
             child: Center(
@@ -187,10 +260,10 @@ class _RechargePageState extends State<RechargePage> {
                                       selectedOffer = null;
                                       scannedCode = null;
                                       isProcessing = false;
-                                      if(!visibleSteps.contains(2)) visibleSteps.add(2);
+                                      if(!isStepVisible(2)) showStep(2);
                                       else{
-                                        visibleSteps.remove(3);
-                                        visibleSteps.remove(4);
+                                        hideStep(3);
+                                        hideStep(4);
                                       }
                                       setState(() {});
                                     },
@@ -219,7 +292,7 @@ class _RechargePageState extends State<RechargePage> {
                                           offer: elm,
                                           onTap:(){
                                             selectedOffer = elm;
-                                            if(!visibleSteps.contains(3)) visibleSteps.add(3);
+                                            showStep(3);
                                             setState(() {});
                                           }
                              ))
@@ -236,38 +309,80 @@ class _RechargePageState extends State<RechargePage> {
                       const StepWidget(step: "3",label: "Scan your recharge"),
                       const SizedBox(height: 10),
                       scannedCode==null?
-                      ElevatedButton(
-                          onPressed: (){
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>AlertDialog(
-                                    content: ScanAlertContentWidget(
-                                        codeLength:selectedSimCard?.getCodeLength(),
-                                        onDone: (BuildContext context,String text){
-                                          if(scannedCode is String && scannedCode!.isNotEmpty) return;
-                                          Navigator.of(context).pop();
-                                          scannedCode = text;
-                                          if(!visibleSteps.contains(4)) visibleSteps.add(4);
-                                          setState(() {});
-                                        }
-                                    )
-                                )
-                            );
-                          },
-                          child:const Center(
-                            child: Text("Scan"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: ButtonWidget(
+                                icon: Icons.edit,
+                                text: "Type",
+                                onPressed: () => _openDialogForCode(),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: ButtonWidget(
+                                icon: Icons.camera,
+                                text: "Scan",
+                                onPressed: (){
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>AlertDialog(
+                                          content: ScanAlertContentWidget(
+                                              codeLength:selectedSimCard?.getCodeLength(),
+                                              onDone: (BuildContext context,String text){
+                                                if(scannedCode is String && scannedCode!.isNotEmpty) return;
+                                                Navigator.of(context).pop();
+                                                _saveCode(text);
+                                              }
+                                          )
+                                      )
+                                  );
+                                },
+                            ),
                           )
-                      ):
-                      const Text(
-                        "scanned succesfully",
-                        style: TextStyle(
-                            color: Colors.green
-                        ),
-                        textAlign: TextAlign.center,
-                      )
+                        ],
+                      ):Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         crossAxisAlignment: CrossAxisAlignment.center,
+                         children: [
+                           Expanded(
+                             child: Text(
+                               "${isCodeValid?"":"Invalid code \n"}${scannedCode!}",
+                               style: TextStyle(
+                                   color: isCodeValid? Colors.green:Colors.red
+                               ),
+                               textAlign: TextAlign.center,
+                             ),
+                           ),
+                           InkWell(
+                               onTap: ()=>_openDialogForCode(text: scannedCode),
+                               child: Container(
+                                 decoration: BoxDecoration(
+                                   borderRadius: BorderRadius.circular(50),
+                                   color: Theme.of(context).colorScheme.primary,
+                                 ),
+                                 padding: const EdgeInsets.all(8.0),
+                                 child:const Icon(Icons.edit_note,color: Colors.white),
+                               )
+                           ),
+                           const SizedBox(width:5),
+                           InkWell(
+                               onTap: ()=>refreshStep3(),
+                               child: Container(
+                                 decoration: BoxDecoration(
+                                   borderRadius: BorderRadius.circular(50),
+                                   color: Theme.of(context).colorScheme.primary,
+                                 ),
+                                 padding: const EdgeInsets.all(8.0),
+                                 child:const Icon(Icons.close_sharp,color: Colors.white),
+                               )
+                           )
+                         ],
+                       )
                     ],
                   ),
-                  if(visibleSteps.contains(4))
+                  if(isStepVisible(4))
                   //step 4 : send sms
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

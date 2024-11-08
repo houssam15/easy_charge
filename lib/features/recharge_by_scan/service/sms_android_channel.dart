@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 class SmsAndroidChannel {
-  static const platform = MethodChannel('com.example/sms');
+  static const platform = MethodChannel('com.features.recharge_by_scan/sms');
   Future<void> sendSms(String phone, String smsContent, int simSlot) async {
     try {
       await platform.invokeMethod('sendSms', {

@@ -13,7 +13,12 @@ class OfferWidget extends StatelessWidget {
     return InkWell(
               onTap: onTap,
               child: Chip(
-                        label: Text(offer),
+                        label: Text(
+                                offer.isEmpty?" ":offer,
+                                style: TextStyle(
+                                          color: Colors.white
+                                ),
+                        ),
                         color: WidgetStateProperty.all<Color>(
                               isSelected?Theme.of(context).colorScheme.primary.withOpacity(Random().nextDouble()):Colors.grey
                         )

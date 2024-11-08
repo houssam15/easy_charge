@@ -42,9 +42,9 @@ class SimCardEntity {
 
   List<String> getOffers(){
      switch(operator){
-       case Operator.TISALAT: return ["1","2","22","3","4","5","6","7","77","78","8","88","9"];
-       case Operator.ORANGE: return ["1","2","3","4"];
-       case Operator.INWI: return ["1","2","3","4","5","6","7","8","9"];
+       case Operator.TISALAT: return ["*1","*2","*22","*3","*4","*5","*6","*7","*77","*78","*8","*88","*9",""];
+       case Operator.ORANGE: return ["*1","*2","*3","*4",""];
+       case Operator.INWI: return ["*1","*2","*3","*4","*5","*6","*7","*8","*9",""];
        default: return [];
      }
   }

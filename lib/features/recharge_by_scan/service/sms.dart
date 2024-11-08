@@ -39,14 +39,12 @@ class SmsService{
           PermissionStatus status = await grantPermissions();
           if(status == PermissionStatus.denied) return const MyDataState.DataFailed("Can't grant permissions !");
           List<MySimInfo.SimInfo> simData = await MySimCardInfo.SimCardInfo().getSimInfo()??[];
-          if(simData.isEmpty) return MyDataState.DataSuccess([]);
+          if(simData.isEmpty) return  MyDataState.DataSuccess([]);
           else return MyDataState.DataSuccess([SimCardModel(number: simData.first.number==""?null:simData.first.number, name: simData.first.displayName,slotNumber: int.tryParse(simData.first.slotIndex)??0)]);
         }catch(err){
           return MyDataState.DataFailed(err.toString());
         }
     }
-
-
 
     SmsService? listenIncomingSms(){
         try{
@@ -88,25 +86,3 @@ class SmsService{
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

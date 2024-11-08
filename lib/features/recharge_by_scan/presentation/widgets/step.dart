@@ -22,7 +22,8 @@ class StepWidget extends StatelessWidget {
                 child: Text(
                   step,
                   style:const TextStyle(
-                    fontWeight: FontWeight.w900
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white
                   ),
                 ),
               ),

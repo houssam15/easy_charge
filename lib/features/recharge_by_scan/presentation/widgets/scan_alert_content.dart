@@ -20,6 +20,14 @@ class _ScanAlertContentWidgetState extends State<ScanAlertContentWidget> {
   late Future<void> _initializeControllerFuture;
   //this is true when we get the result in onDone callback , it used to avoid listening plateform frames after stream is closed.
   bool isDone = false;
+  bool isFlashOn = false;
+
+  _toggleFlash(){
+      _cameraService.getController()?.setFlashMode(isFlashOn?FlashMode.off:FlashMode.torch);
+      isFlashOn = !isFlashOn;
+      setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +69,7 @@ class _ScanAlertContentWidgetState extends State<ScanAlertContentWidget> {
     if(_cameraService.isStreamingImages()==false) return;
     await _cameraService.getController()?.stopImageStream();
     _cameraService.streamingStoped();
+    setState(() {});
   }
 
   @override
@@ -104,25 +113,41 @@ class _ScanAlertContentWidgetState extends State<ScanAlertContentWidget> {
                       )
                   ),
                   const Spacer(),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:WidgetStateProperty.all(
-                            _cameraService.isStreamingStarted?Theme.of(context).colorScheme.error:Theme.of(context).colorScheme.primary
-                        )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InkWell(
+                          onTap: ()=>_toggleFlash(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: isFlashOn?Theme.of(context).colorScheme.primary:Colors.grey,
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child:const Icon(Icons.flash_on,color: Colors.white),
+                          )
                       ),
-                      onPressed: (){
+                      ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:WidgetStateProperty.all(
+                                  _cameraService.isStreamingStarted?Theme.of(context).colorScheme.error:Theme.of(context).colorScheme.primary
+                              )
+                          ),
+                          onPressed: (){
                             if(_cameraService.isStreamingStarted){
                               _stopDetection();
                             } else {
                               _startDetection();
                             }
-                      },
-                      child:Text(
-                          _cameraService.isStreamingStarted?"Stop detection":"Start detection",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary
-                          ),
+                          },
+                          child:Text(
+                            _cameraService.isStreamingStarted?"Stop detection":"Start detection",
+                            style:const TextStyle(
+                                color: Colors.white,
+                            ),
+                          )
                       )
+                    ],
                   )
                 ],
               ),
@@ -148,45 +173,3 @@ class _ScanAlertContentWidgetState extends State<ScanAlertContentWidget> {
 
 
 
-
-
-/* _reconizeText() async{
-
-    _cameraService.getController()?.startImageStream((image) async{
-        await OcrTextRecognition().recognizeText(
-            codeLength: widget.codeLength,
-            inputImage: _cameraService.getInputImageFromCameraImage(image),
-            onDone: (String text) {
-              print("FOUNT $text");
-              //_cameraService.getController()?.dispose();
-             // scannedText = text;
-             // isFinished = true;
-              //widget.onDone(context,text);
-             // setState(() {});
-            },
-            onProcess: (String text) {
-              print("PROCESSING $text");
-            }
-        );
-    });
-  }*/
-
-
-//bool alreadyStreaming = false;
-//bool isFinished = false;
-//String scannedText = "";
-
-
-/*   await _cameraService.getController()?.startImageStream((image) async{
-      OcrTextRecognition().recognizeText(
-          codeLength: widget.codeLength,
-          inputImage: _cameraService.getInputImageFromCameraImage(image),
-          onDone: (String text) {
-            if(kDebugMode) print("FOUNT $text");
-            _stopDetection();
-          },
-          onProcess: (String text) {
-            if(kDebugMode) print("PROCESSING $text");
-          }
-      );
-    });*/
