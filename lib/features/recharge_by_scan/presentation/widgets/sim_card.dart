@@ -31,7 +31,7 @@ class _SimCardWidgetState extends State<SimCardWidget> {
             child: Card(
               child: Stack(
                 children: [
-                  if(operator != Operator.UNKOWN)
+                  if(operator != Operator.UNKNOWN)
                     Positioned.fill(
                       child: Opacity(
                         opacity: 0.2,

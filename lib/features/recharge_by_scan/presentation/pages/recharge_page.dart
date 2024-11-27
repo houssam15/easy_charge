@@ -7,6 +7,7 @@ import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/
 import "package:recharge_by_scan/features/recharge_by_scan/presentation/widgets/send_button.dart";
 import "../../../../core/util/custom_navigation_helper.dart";
 import "../../../../core/widgets/my_text_field.dart";
+import "../../../../main.dart";
 import "../../domain/entities/recharge.dart";
 import "../../domain/entities/sim_card.dart";
 import "../bloc/remote/recharge_account/remote_recharge_account_bloc.dart";
@@ -159,7 +160,11 @@ class _RechargePageState extends State<RechargePage> {
                 actions: [
                   TextButton(
                       onPressed: (){
+                        if(mounted){
                           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                        }else{
+                          scaffoldMessengerKey.currentState?.hideCurrentMaterialBanner();
+                        }
                       },
                       child: const Text(
                           "Ok",
@@ -393,97 +398,104 @@ class _RechargePageState extends State<RechargePage> {
                           builder: (context, snapshot) => StepWidget(step: "4",label: "Send Sms ${selectedSimCard is SimCardEntity?"To ${snapshot.data}":""}"),
                       ),
                       const SizedBox(height:20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CodeWidget(code:scannedCode!),
-                          const SizedBox(width: 5),
-                          OfferWidget(offer: selectedOffer!),
-                          const SizedBox(width: 5),
-                          SendButtonWidget(
-                            isProcessing: isProcessing,
-                            onTap:isProcessing? null : (){
-                              isProcessing = true;
-                              setState(() {});
-                              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                              if(selectedSimCard is SimCardEntity && scannedCode is String && selectedOffer is String){
-                                  listenSms(true);
-                                  context.read<RemoteRechargeAccountBloc>().add(
-                                    RemoteRechargeAccount(
-                                        RechargeEntity(
-                                          code: scannedCode!, // Sample recharge code
-                                          simCard: selectedSimCard!, // Selected SIM card
-                                          offer: selectedOffer!, // Example offer
-                                        ),
-                                    ),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          duration:const Duration(minutes: 10),
-                                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                                          content:Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              const SizedBox(
-                                                  width:20,
-                                                  height: 20,
-                                                  child: CircularProgressIndicator(color: Colors.white,strokeWidth: 2,)
-                                              ),
-                                              const Spacer(),
-                                              const Text("Waiting for confirmation sms ..."),
-                                              const Spacer(),
-                                              TextButton(
-                                                  onPressed: (){
-                                                      listenSms(false);
-                                                      isProcessing = false;
-                                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                                      setState(() {});
-                                                  },
-                                                  child: Container(
-                                                    padding:const EdgeInsets.symmetric(horizontal: 4,vertical: 2),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(5),
-                                                      color: Colors.white
-                                                    ),
-                                                    child: Text(
-                                                        "Cancel",
-                                                        style: TextStyle(
-                                                            color: Theme.of(context).colorScheme.primary,
-                                                        )
-                                                    ),
-                                                  )
-                                              )
-                                            ],
-                                          )
-                                      )
-                                  );
-                              }else{
-                                isProcessing = false;
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CodeWidget(code:scannedCode!),
+                            const SizedBox(width: 5),
+                            OfferWidget(offer: selectedOffer!),
+                            const SizedBox(width: 5),
+                            SendButtonWidget(
+                              isProcessing: isProcessing,
+                              onTap:isProcessing? null : (){
+                                isProcessing = true;
                                 setState(() {});
-                                ScaffoldMessenger.of(context).showMaterialBanner(
-                                  MaterialBanner(
-                                    backgroundColor: Theme.of(context).colorScheme.error,
-                                    content:Text(
-                                        'Something wrong , please try later !',
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onError
+                                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                                if(selectedSimCard is SimCardEntity && scannedCode is String && selectedOffer is String){
+                                    listenSms(true);
+                                    context.read<RemoteRechargeAccountBloc>().add(
+                                      RemoteRechargeAccount(
+                                          RechargeEntity(
+                                            code: scannedCode!, // Sample recharge code
+                                            simCard: selectedSimCard!, // Selected SIM card
+                                            offer: selectedOffer!, // Example offer
+                                          ),
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration:const Duration(minutes: 10),
+                                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                            content:Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                const SizedBox(
+                                                    width:20,
+                                                    height: 20,
+                                                    child: CircularProgressIndicator(color: Colors.white,strokeWidth: 2,)
+                                                ),
+                                                const Spacer(),
+                                                const Text("Waiting for confirmation sms ..."),
+                                                const Spacer(),
+                                                TextButton(
+                                                    onPressed: (){
+                                                      if(mounted) {
+                                                        listenSms(false);
+                                                        isProcessing = false;
+                                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                      } else {
+                                                          scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    child: Container(
+                                                      padding:const EdgeInsets.symmetric(horizontal: 4,vertical: 2),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(5),
+                                                        color: Colors.white
+                                                      ),
+                                                      child: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                              color: Theme.of(context).colorScheme.primary,
+                                                          )
+                                                      ),
+                                                    )
+                                                )
+                                              ],
+                                            )
                                         )
+                                    );
+                                }else{
+                                  isProcessing = false;
+                                  setState(() {});
+                                  ScaffoldMessenger.of(context).showMaterialBanner(
+                                    MaterialBanner(
+                                      backgroundColor: Theme.of(context).colorScheme.error,
+                                      content:Text(
+                                          'Something wrong , please try later !',
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.onError
+                                          )
+                                      ),
+                                      leading:const Icon(Icons.error),
+                                      actions: <Widget>[
+                                          TextButton(
+                                              onPressed: () {
+                                                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                                                if(context.canPop()) context.pop();
+                                              },
+                                              child:const Text("Undo")
+                                          )
+                                      ],
                                     ),
-                                    leading:const Icon(Icons.error),
-                                    actions: <Widget>[
-                                        TextButton(
-                                            onPressed: () {
-                                              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                                              if(context.canPop()) context.pop();
-                                            },
-                                            child:const Text("Undo")
-                                        )
-                                    ],
-                                  ),
-                                );
-                              }
-                          })
-                        ],
+                                  );
+                                }
+                            })
+                          ],
+                        ),
                       )
                     ],
                   ),

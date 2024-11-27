@@ -1,0 +1,21 @@
+
+**************************************************************
+Error apear after i upgrade to android studio ladybug
+Plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.0', apply: false] was not found in any of the following sources:
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Plugin Repositories (could not resolve plugin artifact 'org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin:2.0.0')
+  Searched in the following repositories:
+    Google
+    MavenRepo
+    Gradle Central Plugin Repository
+--------------------------------------------------------------
+https://stackoverflow.com/questions/52562735/plugin-id-org-jetbrains-kotlin-jvm-version-1-2-71-was-not-found-in-any
+check auto config
+
+restart android studio
+***************************************************************
+Execution failed for task ':camera_android_camerax:compileDebugJavaWithJavac'.
+--------------------------------------------------------------
+https://github.com/flutter/flutter/issues/156304#issuecomment-2397707812
+****sub err****> Could not create an instance of type com.android.build.api.variant.impl.LibraryVariantBuilderImpl.
+----sub sol----> https://stackoverflow.com/questions/78744324/could-not-create-an-instance-of-type-com-android-build-api-variant-impl-libraryv

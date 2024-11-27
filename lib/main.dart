@@ -7,6 +7,8 @@ import 'package:recharge_by_scan/features/recharge_by_scan/presentation/bloc/rem
 import 'package:recharge_by_scan/injection_container.dart';
 import 'core/util/custom_navigation_helper.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
@@ -27,6 +29,7 @@ class App extends StatelessWidget{
     return BlocProvider<RemoteRechargeAccountBloc>(
         create: (context) => sl()..add(const RemoteRechargeAccountInitial()),
       child: MaterialApp.router(
+        scaffoldMessengerKey: scaffoldMessengerKey,
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,
         theme: GlobalThemData.lightThemeData,

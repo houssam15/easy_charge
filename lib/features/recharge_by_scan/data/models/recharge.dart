@@ -23,7 +23,7 @@ class RechargeModel extends RechargeEntity{
 
   String getMessage(Operator operator){
     switch(operator){
-      case Operator.TISALAT:return "$code$offer";
+      case Operator.MAROC_TELECOM:return "$code$offer";
       case Operator.ORANGE:return "$code$offer";
       case Operator.INWI: return "*120*20*$code$offer#";
       default :"$code$offer";

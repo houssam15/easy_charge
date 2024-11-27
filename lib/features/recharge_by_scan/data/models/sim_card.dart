@@ -6,18 +6,21 @@ class SimCardModel extends SimCardEntity{
   SimCardModel({
     required String? number,
     required String? name,
-    required int? slotNumber
+    required int? slotNumber,
+    required String? company
   }):super(
     number: number,
     name: name,
-    slotNumber: slotNumber
+    slotNumber: slotNumber,
+    company: company
   );
 
   factory SimCardModel.fromEntity(SimCardEntity e){
     return SimCardModel(
         number: e.number,
         name: e.name,
-        slotNumber: e.slotNumber
+        slotNumber: e.slotNumber,
+        company: e.company
     );
   }
 
@@ -25,7 +28,8 @@ class SimCardModel extends SimCardEntity{
     return SimCardEntity(
         number: number,
         name: name,
-        slotNumber: slotNumber
+        slotNumber: slotNumber,
+      company: company
     );
   }
 

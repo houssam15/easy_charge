@@ -1,16 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:recharge_by_scan/core/resources/data_state.dart';
 
 class SmsAndroidChannel {
   static const platform = MethodChannel('com.features.recharge_by_scan/sms');
-  Future<void> sendSms(String phone, String smsContent, int simSlot) async {
+  Future<DataState> sendSms(String phone, String smsContent, int? simSlot) async {
     try {
-      await platform.invokeMethod('sendSms', {
+      String x = await platform.invokeMethod('sendSms', {
         'phone': phone,
         'smsContent': smsContent,
-        'simSlot': simSlot,
+        'simSlot': simSlot
       });
-    } on PlatformException catch (e) {
-      print("Failed to send SMS: '${e.message}'.");
+      return  x=="OK"?const DataSuccess(null) : const DataFailed(null);
+    }catch(err){
+      if(kDebugMode) print(err);
+      return const DataFailed(null);
     }
   }
 }

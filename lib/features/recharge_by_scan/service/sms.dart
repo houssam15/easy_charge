@@ -4,6 +4,7 @@ import "package:flutter/foundation.dart";
 import "package:permission_handler/permission_handler.dart";
 import "package:recharge_by_scan/core/resources/data_state.dart" as MyDataState;
 import "package:recharge_by_scan/features/recharge_by_scan/data/models/sim_card.dart";
+import "package:recharge_by_scan/features/recharge_by_scan/service/sms_android_channel.dart";
 import "package:sim_card_info/sim_card_info.dart" as MySimCardInfo;
 import "package:sim_card_info/sim_info.dart" as MySimInfo;
 import 'package:readsms/readsms.dart' as MySmsReader;
@@ -26,8 +27,9 @@ class SmsService{
           PermissionStatus status = await grantPermissions();
           if(status == PermissionStatus.denied) return const MyDataState.DataFailed("Can't grant permissions !");
           if(kDebugMode) print(await MyBackgroundSms.BackgroundSms.isSupportCustomSim);
-          MyBackgroundSms.SmsStatus sms = await MyBackgroundSms.BackgroundSms.sendMessage(simSlot: simSlot ,phoneNumber: number.toString(), message: message.toString());
-          if(sms == MyBackgroundSms.SmsStatus.failed) return const MyDataState.DataFailed("Can't send message !");
+          //MyBackgroundSms.SmsStatus sms = await MyBackgroundSms.BackgroundSms.sendMessage(simSlot: simSlot ,phoneNumber: number.toString(), message: message.toString());
+          MyDataState.DataState sms = await SmsAndroidChannel().sendSms(number.toString(), message.toString(), simSlot);
+          if(sms is MyDataState.DataFailed) return const MyDataState.DataFailed("Can't send message !");
           return const MyDataState.DataSuccess("Is sent");
         }catch(err){
           return MyDataState.DataFailed(err.toString());
@@ -40,8 +42,16 @@ class SmsService{
           if(status == PermissionStatus.denied) return const MyDataState.DataFailed("Can't grant permissions !");
           List<MySimInfo.SimInfo> simData = await MySimCardInfo.SimCardInfo().getSimInfo()??[];
           if(simData.isEmpty) return  MyDataState.DataSuccess([]);
-          else return MyDataState.DataSuccess([SimCardModel(number: simData.first.number==""?null:simData.first.number, name: simData.first.displayName,slotNumber: int.tryParse(simData.first.slotIndex)??0)]);
-        }catch(err){
+          else {
+        return MyDataState.DataSuccess(simData
+            .map((elm) => SimCardModel(
+                number: elm.number == "" ? null : elm.number,
+                name: elm.displayName,
+                company: elm.carrierName,
+                slotNumber: int.tryParse(elm.slotIndex) ?? 0))
+            .toList());
+      }
+    }catch(err){
           return MyDataState.DataFailed(err.toString());
         }
     }
